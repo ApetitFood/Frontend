@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { Container, Flex, VStack } from '@chakra-ui/react'
+import { Container } from '@chakra-ui/react'
 
 import RegisterForm from '../src/components/RegisterForm'
 

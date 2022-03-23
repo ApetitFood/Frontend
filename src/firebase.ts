@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app'
+import { getFirestore } from '@firebase/firestore'
 
 const app = initializeApp({
   apiKey: process.env.FIREBASE_API_KEY,
@@ -9,5 +10,7 @@ const app = initializeApp({
   appId: process.env.FIREBASE_APP_ID,
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 })
+
+export const firebaseDb = getFirestore(app)
 
 export default app

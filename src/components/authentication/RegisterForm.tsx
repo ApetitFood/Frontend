@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
+import { useRouter } from 'next/router'
+import { setDoc, doc } from '@firebase/firestore'
 import {
   Box,
   Button,
@@ -16,9 +18,12 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 
+import { useAuth } from '@/context/AuthContext'
+import TextField from '@/components/TextField'
+import { firebaseDb } from '@/firebase'
+import { UserModesEnum } from '@/types'
+
 import AuthPageLogo from './AuthenticationPageLogo'
-import { useAuth } from '../context/AuthContext'
-import TextField from './TextField'
 
 const RegisterHeader = () => {
   return (
@@ -33,6 +38,7 @@ const RegisterHeader = () => {
 const RegisterForm = () => {
   const colSpan = useBreakpointValue({ base: 2, md: 1 })
   const { register } = useAuth()
+  const router = useRouter()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -44,6 +50,7 @@ const RegisterForm = () => {
         email: '',
         password: '',
         confirmPassword: '',
+        mode: UserModesEnum.RECOMMENDED,
       }}
       validationSchema={yup.object({
         firstName: yup.string().trim().required('First name is required'),
@@ -60,19 +67,29 @@ const RegisterForm = () => {
           .string()
           .oneOf([yup.ref('password'), null], 'Passwords must match')
           .required('Confirm password is required'),
+        mode: yup.string().oneOf(Object.values(UserModesEnum)),
       })}
-      onSubmit={async (values, actions) => {
+      onSubmit={async ({ firstName, lastName, email, password, mode }) => {
         try {
           setError('')
           setLoading(true)
-          await register(values.email, values.password)
+
+          const {
+            user: { uid },
+          } = await register(email, password)
+          await setDoc(doc(firebaseDb, 'users', uid), {
+            firstName,
+            lastName,
+            email,
+            mode,
+          })
         } catch (error) {
           console.log(error)
           setError('Failed to create an account. Please try again later')
         }
 
         setLoading(false)
-        actions.resetForm()
+        router.push('/')
       }}
     >
       {(formik) => (
@@ -112,12 +129,26 @@ const RegisterForm = () => {
               <Heading size='md'>Choose mode</Heading>
             </GridItem>
             <GridItem colSpan={colSpan}>
-              <Button variant='secondary' width='full' mt={4}>
+              <Button
+                variant='secondary'
+                width='full'
+                mt={4}
+                onClick={() =>
+                  formik.setFieldValue('mode', UserModesEnum.RECOMMENDED)
+                }
+              >
                 Recommended
               </Button>
             </GridItem>
             <GridItem colSpan={colSpan}>
-              <Button variant='secondary' width='full' mt={4}>
+              <Button
+                variant='secondary'
+                width='full'
+                mt={4}
+                onClick={() =>
+                  formik.setFieldValue('mode', UserModesEnum.CUSTOM)
+                }
+              >
                 Customized
               </Button>
             </GridItem>
@@ -138,14 +169,6 @@ const RegisterForm = () => {
                 {error}
               </Alert>
             )}
-            {/* <Stack isInline justifyContent='space-between' mt={4}>
-        <Box>
-          <Checkbox>Remember Me</Checkbox>
-        </Box>
-        <Box>
-          <Link color={'teal.500'}>Forgot your password?</Link>
-        </Box>
-      </Stack> */}
           </SimpleGrid>
         </form>
       )}
@@ -157,7 +180,10 @@ const RegisterFooter = () => {
   return (
     <Box textAlign='end' w='full'>
       <Text>
-        Already have an account? <Link color={'teal.500'}>sign in</Link>
+        Already have an account?{' '}
+        <Link color={'teal.500'} href='/login'>
+          sign in
+        </Link>
       </Text>
     </Box>
   )
@@ -179,6 +205,7 @@ const Register = () => {
         p={10}
         spacing={10}
         alignItems='flex-start'
+        justify='center'
         border={'1px'}
       >
         <RegisterHeader />

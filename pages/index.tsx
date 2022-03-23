@@ -1,16 +1,36 @@
 import type { NextPage } from 'next'
-import { Container, Heading } from "@chakra-ui/react"
-import Header from '../src/components/Header'
-import Footer from '../src/components/Footer'
+import { Container, Heading } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
-const Home: NextPage = () => (
-  <Container maxW='container.l' p={0}>
-    <Header/>
-    <Heading size='4xl' color='teal'>
-      This is very beutiful main page
-    </Heading>
-    <Footer/>
-  </Container>
-)
+import { useAuth } from '@/context/AuthContext'
+import { protectRoute } from '@/utils'
+
+const Home: NextPage = () => {
+  const { currentUser } = useAuth()
+  const router = useRouter()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    protectRoute(currentUser, router)
+    setLoading(false)
+  }, [currentUser, router])
+
+  return !loading && currentUser ? (
+    <Container maxW='container.l' p={0}>
+      <Heading size='4xl' color='teal'>
+        This is very beutiful main page
+      </Heading>
+    </Container>
+  ) : null
+}
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      protected: true,
+    },
+  }
+}
 
 export default Home

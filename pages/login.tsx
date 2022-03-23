@@ -1,11 +1,11 @@
 import type { NextPage } from 'next'
 import { Container } from '@chakra-ui/react'
 
-import RegisterForm from '@/components/authentication/RegisterForm'
+import LoginForm from '@/components/authentication/LoginForm'
 
-const Register: NextPage = () => (
-  <Container maxW='container.xl' p={0}>
-    <RegisterForm />
+const Login: NextPage = () => (
+  <Container maxW='container.xl' maxH='container.xl' p={0}>
+    <LoginForm />
   </Container>
 )
 
@@ -17,4 +17,4 @@ export async function getServerSideProps() {
   }
 }
 
-export default Register
+export default Login

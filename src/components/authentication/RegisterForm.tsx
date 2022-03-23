@@ -18,11 +18,12 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 
+import { useAuth } from '@/context/AuthContext'
+import TextField from '@/components/TextField'
+import { firebaseDb } from '@/firebase'
+import { UserModesEnum } from '@/types'
+
 import AuthPageLogo from './AuthenticationPageLogo'
-import { useAuth } from '../../context/AuthContext'
-import TextField from '../TextField'
-import { firebaseDb } from '../../firebase'
-import { UserModesEnum } from '../../types'
 
 const RegisterHeader = () => {
   return (

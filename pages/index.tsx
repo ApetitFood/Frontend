@@ -1,10 +1,10 @@
 import type { NextPage } from 'next'
-import { Container, Heading, Link } from '@chakra-ui/react'
+import { Container, Heading } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { useAuth } from '../src/context/AuthContext'
-import { protectRoute } from '../src/utils'
+import { useAuth } from '@/context/AuthContext'
+import { protectRoute } from '@/utils'
 
 const Home: NextPage = () => {
   const { currentUser } = useAuth()
@@ -21,9 +21,16 @@ const Home: NextPage = () => {
       <Heading size='4xl' color='teal'>
         This is very beutiful main page
       </Heading>
-      <Link href={`users/${currentUser!.uid}`}>Go to my profile</Link>
     </Container>
   ) : null
+}
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      protected: true,
+    },
+  }
 }
 
 export default Home

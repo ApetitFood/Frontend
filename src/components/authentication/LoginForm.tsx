@@ -18,9 +18,10 @@ import {
   Show,
 } from '@chakra-ui/react'
 
+import { useAuth } from '@/context/AuthContext'
+import TextField from '@/components/TextField'
+
 import AuthPageLogo from './AuthenticationPageLogo'
-import { useAuth } from '../../context/AuthContext'
-import TextField from '../TextField'
 
 const LoginHeader = () => {
   return (

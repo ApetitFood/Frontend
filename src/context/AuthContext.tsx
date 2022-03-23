@@ -9,8 +9,9 @@ import {
   User,
 } from 'firebase/auth'
 
-import firebaseApp from '../firebase'
-import { AuthContextType } from '../types'
+import firebaseApp from '@/firebase'
+import { AuthContextType } from '@/types'
+import { Spinner } from '@chakra-ui/react'
 
 const AuthContext = React.createContext<AuthContextType>({
   currentUser: null,
@@ -25,11 +26,19 @@ export const useAuth = () => {
   return useContext(AuthContext)
 }
 
-export const AuthProvider = ({ children }: any) => {
+export const AuthProvider = ({
+  children,
+  isPageProtected,
+}: {
+  children: any
+  isPageProtected: boolean
+}) => {
   const router = useRouter()
 
   const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [userLoggedIn, setUserLoggedIn] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [initRendered, setInitRendered] = useState(false)
 
   const register = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password)
@@ -50,11 +59,35 @@ export const AuthProvider = ({ children }: any) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user)
-      setLoading(false)
+      user ? setUserLoggedIn(true) : setUserLoggedIn(false)
+
+      setInitRendered(true)
     })
 
     return unsubscribe
   }, [])
+
+  useEffect(() => {
+    if (!initRendered) {
+      return
+    }
+
+    const checkRoutes = async () => {
+      if (!userLoggedIn && isPageProtected) {
+        await router.push('/login')
+        return
+      }
+
+      if (userLoggedIn && !isPageProtected) {
+        await router.push('/')
+        return
+      }
+
+      setLoading(false)
+    }
+
+    checkRoutes()
+  }, [userLoggedIn, isPageProtected, router, initRendered])
 
   const value = {
     currentUser,
@@ -66,7 +99,7 @@ export const AuthProvider = ({ children }: any) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {!loading ? children : <Spinner />}
     </AuthContext.Provider>
   )
 }

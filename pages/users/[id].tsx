@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 import { doc, getDoc } from '@firebase/firestore'
 import { Spinner, Container } from '@chakra-ui/react'
 
-import type { User } from '../../src/types'
-import { firebaseDb } from '../../src/firebase'
-import UserProfile from '../../src/components/user/profile'
+import type { User } from '@/types'
+import { firebaseDb } from '@/firebase'
+import UserProfile from '@/components/user/profile'
 
 const User: NextPage = () => {
   const router = useRouter()
@@ -35,6 +35,14 @@ const User: NextPage = () => {
       {loading ? <Spinner /> : <UserProfile user={user!} />}
     </Container>
   )
+}
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      protected: true,
+    },
+  }
 }
 
 export default User

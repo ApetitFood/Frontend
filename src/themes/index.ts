@@ -49,6 +49,16 @@ const theme = extendTheme({
             teal: 'confirmColor.500',
           },
         },
+        alarm: {
+          ...confirmRing,
+          backgroundColor: 'red.500',
+          _hover: {
+            backgroundColor: 'red.600',
+          },
+          _active: {
+            teal: 'confirmColor.500',
+          },
+        },
       },
     },
   },

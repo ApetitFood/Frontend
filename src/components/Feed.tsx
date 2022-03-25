@@ -20,7 +20,7 @@ function FeedBox({json}){
                 </Image>
             </AspectRatio>
             <div className='feed-text-container'>
-                <Text>
+                {/* <Text>
                     {json.Description}
                 </Text>
                 <Text>
@@ -30,7 +30,7 @@ function FeedBox({json}){
                             return <li>{steps}</li>
                         })}
                     </ol>
-                </Text>
+                </Text> */}
                 <Text>
                     <Text margin={'0.5em 0'}  fontWeight={'bold'}>Macronutrients:</Text>
                     <ul>

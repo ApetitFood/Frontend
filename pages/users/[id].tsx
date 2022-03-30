@@ -1,17 +1,26 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { doc, getDoc } from '@firebase/firestore'
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from '@firebase/firestore'
 import { Spinner, Container } from '@chakra-ui/react'
 
 import type { User } from '@/types'
 import { firebaseDb } from '@/firebase'
 import UserProfile from '@/components/user/profile'
+import { Recipe } from '@/types/recipe'
 
 const User: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
   const [user, setUser] = useState<User>()
+  const [userRecipes, setUserRecipes] = useState<Recipe[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -20,14 +29,30 @@ const User: NextPage = () => {
       const userData = data.data()
       if (userData) {
         setUser({ ...userData, id } as User)
-        setLoading(false)
         return
       }
 
       router.push('/login')
     }
 
+    const getRecipes = async () => {
+      const data = await getDocs(query(
+        collection(firebaseDb, 'recipes'),
+        where('ownerId', '==', id)
+      ))
+      data.forEach((doc) => {
+        const recipeData = doc.data() as Recipe
+        setUserRecipes((currentValues) => [
+          ...currentValues,
+          { ...recipeData, id: doc.id },
+        ])
+      })
+
+      setLoading(false)
+    }
+
     getUser()
+    getRecipes()
   }, [id, router])
 
   return (

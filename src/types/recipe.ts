@@ -4,7 +4,7 @@ export type Recipe = {
   title: string
   directions: string
   ingredients: RecipeIngredient[]
-  description?: string
+  description?: string[]
 }
 
 export type RecipeIngredient = {

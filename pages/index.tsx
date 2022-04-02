@@ -7,7 +7,7 @@ import { useAuth } from '@/context/AuthContext'
 import { protectRoute } from '@/utils'
 import AddRecipeModal from '@/components/recipe/AddRecipeModal'
 
-import Feed from "@/components/Feed"
+import Feed from '@/components/Feed'
 
 const Home: NextPage = () => {
   const { currentUser } = useAuth()
@@ -21,9 +21,8 @@ const Home: NextPage = () => {
 
   return !loading && currentUser ? (
     <Container maxW='container.l' p={0}>
-      <Feed/>
       <AddRecipeModal />
-
+      <Feed />
     </Container>
   ) : null
 }

@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 
 import { useAuth } from '@/context/AuthContext'
 import { protectRoute } from '@/utils'
+import AddRecipeModal from '@/components/recipe/AddRecipeModal'
 
 import Feed from "@/components/Feed"
 
@@ -21,6 +22,8 @@ const Home: NextPage = () => {
   return !loading && currentUser ? (
     <Container maxW='container.l' p={0}>
       <Feed/>
+      <AddRecipeModal />
+
     </Container>
   ) : null
 }

@@ -1,24 +1,37 @@
-import {Grid, Text, AspectRatio, SimpleGrid, GridItem, Box, useBreakpointValue, Image } from '@chakra-ui/react'
+import {Grid, Text, AspectRatio, SimpleGrid, GridItem, Box, useBreakpointValue, Image, StatHelpText } from '@chakra-ui/react'
+import {
+    doc,
+    getDoc,
+    collection,
+    query,
+    where,
+    getDocs,
+  } from '@firebase/firestore'
 import RecipesMock from '../mocks/recipes'
+import { firebaseDb } from '@/firebase'
+import { Recipe, RecipeIngredient } from '@/types/recipe'
+import { useEffect, useState } from 'react'
 
-function FeedBox({json}){
-    const macro = JSON.parse(JSON.stringify(json.Macronutrients))
-    const steps = JSON.parse(JSON.stringify(json.RecipeSteps))
+
+function FeedBox(data : Recipe){
+    
+    //const macro = JSON.parse(JSON.stringify(json.Macronutrients))
+    //const steps = JSON.parse(JSON.stringify(json.description))
     return(
         <Box height={'fit-content'} margin={'10px'} border="solid 1px rgba(0,0,0, .25)">
             <Text className='text-container-align-middle'>
                 <Text className='text-align-middle' borderBottom={"solid 1px rgba(0,0,0, .25);"}>
-                    {json.Name}
+                    {data.title}
                 </Text>
             </Text>
             
-            <AspectRatio ratio={3 / 3}>
+            {/* <AspectRatio ratio={3 / 3}>
                 <Image
                     
-                    src={''+ json.Image}>
+                    src={''+ data.Image}>
 
                 </Image>
-            </AspectRatio>
+            </AspectRatio> */}
             <div className='feed-text-container'>
                 {/* <Text>
                     {json.Description}
@@ -33,11 +46,10 @@ function FeedBox({json}){
                 </Text> */}
                 <Text>
                     <Text margin={'0.5em 0'}  fontWeight={'bold'}>Macronutrients:</Text>
-                    <ul>
-                        {macro.map((macro) => {
-                            return <li>{macro}</li>
-                        })}
-                    </ul>
+                    { <ul>
+                        {data.ingredients.map((ingredient) => {return <li>{ingredient.product} {ingredient.amount} {ingredient.measurement}</li>})}
+                        
+                    </ul>}
                     
                 </Text>
             </div>
@@ -49,13 +61,28 @@ function FeedBox({json}){
 
 function Feed(){
     const columns = [1, 2, 3]
+    const [feedRecipes, setFeedRecipes] = useState<Recipe[]>([])
+    useEffect(() => {    
+    const getRecipes = async () => {
+        const data = await getDocs(query(
+          collection(firebaseDb, 'recipes')
+        ))
+        data.forEach((doc) => {
+            const recipeData = doc.data() as Recipe
+          setFeedRecipes((currentValues) => [
+            ...currentValues,
+            { ...recipeData, id: doc.id },
+          ])
+        })
+    }
+    getRecipes()
+},[])
+
+
     return (
         <div>
             <SimpleGrid  columns={columns} templateRows={'masonry'}>
-            {RecipesMock.map((RecipesMock) => {
-                            return <FeedBox json={RecipesMock}></FeedBox>
-                        })}
-
+                {feedRecipes.map((item) =>  { return <FeedBox {...item as Recipe}></FeedBox>})}
             </SimpleGrid >
         </div>
              

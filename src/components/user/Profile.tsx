@@ -12,6 +12,7 @@ import {
 
 import { User } from '@/types'
 import { useAuth } from '@/context/AuthContext'
+
 import Avatar from './Avatar'
 
 const UserProfile = ({ user }: { user: User }) => {

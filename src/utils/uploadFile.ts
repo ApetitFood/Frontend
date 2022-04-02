@@ -9,19 +9,12 @@ const metadata = {
 export const uploadFile = ({ file, path }: { file: any; path: string }) => {
   const storageRef = ref(firebaseStorage, path)
   const uploadTask = uploadBytesResumable(storageRef, file, metadata)
+
   uploadTask.on(
     'state_changed',
     (snapshot) => {
       const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
       console.log('Upload is ' + progress + '% done')
-      switch (snapshot.state) {
-        case 'paused':
-          console.log('Upload is paused')
-          break
-        case 'running':
-          console.log('Upload is running')
-          break
-      }
     },
     (error) => {
       switch (error.code) {
@@ -38,7 +31,9 @@ export const uploadFile = ({ file, path }: { file: any; path: string }) => {
     },
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        console.log('File available at', downloadURL)
+        console.log(
+          `Uploaded file succesfully, file is available at: ${downloadURL}`
+        )
       })
     }
   )

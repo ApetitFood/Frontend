@@ -48,7 +48,6 @@ function FeedBox(data : Recipe){
                     <Text margin={'0.5em 0'}  fontWeight={'bold'}>Macronutrients:</Text>
                     { <ul>
                         {data.ingredients.map((ingredient) => {return <li>{ingredient.product} {ingredient.amount} {ingredient.measurement}</li>})}
-                        
                     </ul>}
                     
                 </Text>

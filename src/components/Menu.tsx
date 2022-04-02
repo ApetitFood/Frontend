@@ -18,7 +18,7 @@ export function Mobile(props: { header: boolean }) {
       {(props.header ? isMobile : !isMobile) ? (
         <>
           <ButtonLink link='/' name={<SearchOutlined />} />
-          <ButtonLink link='/feed' name={<HeartOutlined />} />
+          <ButtonLink link='/' name={<HeartOutlined />} />
           <ButtonLink link='/' name={<AccountBookFilled />} />
         </>
       ) : (

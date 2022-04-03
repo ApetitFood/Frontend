@@ -1,9 +1,9 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { VStack, Image } from '@chakra-ui/react'
+import { doc, updateDoc } from 'firebase/firestore'
 
 import { downloadFile, uploadFile } from '@/utils'
 import { User } from '@/types'
-import { doc, updateDoc } from 'firebase/firestore'
 import { firebaseDb } from '@/firebase'
 import PhotoField from '@/components/form/PhotoInput'
 

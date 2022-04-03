@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { collection, addDoc } from 'firebase/firestore'
@@ -8,6 +8,9 @@ import {
   GridItem,
   Alert,
   AlertIcon,
+  VStack,
+  Heading,
+  useDisclosure,
 } from '@chakra-ui/react'
 
 import TextField from '@/components/form/TextField'
@@ -15,14 +18,29 @@ import TextAreaField from '@/components/form/TextAreaField'
 import { MeasurementsEnum } from '@/types/recipe'
 import { firebaseDb } from '@/firebase'
 import { useAuth } from '@/context/AuthContext'
+import PhotoField from '@/components/form/PhotoInput'
+import { uploadFile } from '@/utils'
 
 import IngredientsInput from './IngredientsInput'
 import DirectionInput from './DirectionInput'
 
 const AddRecipeForm = () => {
+  const { onClose } = useDisclosure()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [recipePhoto, setRecipePhoto] = useState('')
+
   const { currentUser } = useAuth()
+
+  const onRecipePhotoUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      uploadFile({
+        path: `recipes/${e.target.files[0].name}`,
+        file: e.target.files[0],
+      })
+      setRecipePhoto(`recipes/${e.target.files[0].name}`)
+    }
+  }
 
   return (
     <Formik
@@ -64,6 +82,7 @@ const AddRecipeForm = () => {
             ingredients,
             directions,
             ownerId: currentUser!.uid,
+            photo: recipePhoto,
           })
         } catch (error) {
           console.warn(error)
@@ -71,6 +90,7 @@ const AddRecipeForm = () => {
         }
 
         setLoading(false)
+        onClose()
       }}
     >
       {(formik) => (
@@ -104,6 +124,12 @@ const AddRecipeForm = () => {
                 label='Directions'
                 isRequired={true}
               />
+            </GridItem>
+            <GridItem colSpan={2}>
+              <VStack>
+                <Heading size={'md'}>Upload photo</Heading>
+                <PhotoField name={'photo'} onChange={onRecipePhotoUpload} />
+              </VStack>
             </GridItem>
             <GridItem colSpan={2}>
               <Button

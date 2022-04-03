@@ -1,8 +1,9 @@
 import { Text, SimpleGrid, Box, AspectRatio, Image } from '@chakra-ui/react'
 import { collection, query, getDocs } from '@firebase/firestore'
+import { useEffect, useState } from 'react'
+
 import { firebaseDb } from '@/firebase'
 import { Recipe } from '@/types/recipe'
-import { useEffect, useState } from 'react'
 import { downloadFile } from '@/utils'
 
 const FeedBox = ({
@@ -14,14 +15,11 @@ const FeedBox = ({
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    console.log('enter use effect')
     const retrieveRecipePhoto = async () => {
-      console.log('retrieving photo')
       const photoPath = photo || 'recipes/default.jpg'
       const recipePhoto = await downloadFile(photoPath)
       setRecipePhoto(recipePhoto)
       setIsLoading(false)
-      console.log('retrieved photo')
     }
 
     setIsLoading(true)
@@ -95,7 +93,6 @@ const Feed = () => {
 
   useEffect(() => {
     const getRecipes = async () => {
-      console.log('getting recipes')
       const data = await getDocs(query(collection(firebaseDb, 'recipes')))
       data.forEach((doc) => {
         const recipeData = doc.data() as Recipe
@@ -104,6 +101,7 @@ const Feed = () => {
           { ...recipeData, id: doc.id },
         ])
       })
+
       setIsLoading(false)
     }
 

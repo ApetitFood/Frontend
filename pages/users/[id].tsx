@@ -13,7 +13,7 @@ import { Spinner, Container } from '@chakra-ui/react'
 
 import type { User } from '@/types'
 import { firebaseDb } from '@/firebase'
-import UserProfile from '@/components/user/profile'
+import UserProfile from '@/components/user/Profile'
 import { Recipe } from '@/types/recipe'
 
 const User: NextPage = () => {
@@ -36,10 +36,9 @@ const User: NextPage = () => {
     }
 
     const getRecipes = async () => {
-      const data = await getDocs(query(
-        collection(firebaseDb, 'recipes'),
-        where('ownerId', '==', id)
-      ))
+      const data = await getDocs(
+        query(collection(firebaseDb, 'recipes'), where('ownerId', '==', id))
+      )
       data.forEach((doc) => {
         const recipeData = doc.data() as Recipe
         setUserRecipes((currentValues) => [

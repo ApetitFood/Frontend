@@ -9,4 +9,5 @@ export type User = {
   lastName: string
   email: string
   mode: UserModesEnum
+  avatar?: string
 }

@@ -10,8 +10,10 @@ import {
   Button,
 } from '@chakra-ui/react'
 
-import { User } from '../../types'
-import { useAuth } from '../../context/AuthContext'
+import { User } from '@/types'
+import { useAuth } from '@/context/AuthContext'
+
+import Avatar from './Avatar'
 
 const UserProfile = ({ user }: { user: User }) => {
   const { logout } = useAuth()
@@ -30,6 +32,7 @@ const UserProfile = ({ user }: { user: User }) => {
         <VStack>
           <Heading>{`${user.firstName} ${user.lastName}`}</Heading>
           <Text>{`Mode: ${user.mode}`}</Text>
+          <Avatar user={user} />
           <Button variant='alarm' width='full' onClick={handleLogout}>
             Log out
           </Button>

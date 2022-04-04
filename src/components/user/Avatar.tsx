@@ -1,16 +1,15 @@
-import { createRef, useEffect, useState } from 'react'
-import { CloudUploadOutlined } from '@ant-design/icons'
-import { VStack, Image, IconButton, Input } from '@chakra-ui/react'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { VStack, Image } from '@chakra-ui/react'
+import { doc, updateDoc } from 'firebase/firestore'
 
 import { downloadFile, uploadFile } from '@/utils'
 import { User } from '@/types'
-import { doc, updateDoc } from 'firebase/firestore'
 import { firebaseDb } from '@/firebase'
+import PhotoField from '@/components/form/PhotoInput'
 
 const Avatar = ({ user }: { user: User }) => {
   const [avatar, setAvatar] = useState('')
   const [isLoading, setIsLoading] = useState(true)
-  const fileRef = createRef<HTMLInputElement>()
   const userRef = doc(firebaseDb, 'users', user.id)
 
   useEffect(() => {
@@ -24,6 +23,18 @@ const Avatar = ({ user }: { user: User }) => {
     setIsLoading(true)
     retrieveUserAvatar()
   }, [user])
+
+  const onAvatarUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      uploadFile({
+        path: `avatars/${user.id}`,
+        file: e.target.files[0],
+      })
+      updateDoc(userRef, {
+        avatar: `avatars/${user.id}`,
+      })
+    }
+  }
 
   return (
     <>
@@ -44,31 +55,7 @@ const Avatar = ({ user }: { user: User }) => {
             objectFit='cover'
           />
           Choose Avatar
-          <Input
-            name='avatar'
-            accept='image/*'
-            hidden
-            ref={fileRef}
-            type='file'
-            onChange={(e) => {
-              if (e.target.files && e.target.files[0]) {
-                uploadFile({
-                  path: `avatars/${user.id}`,
-                  file: e.target.files[0],
-                })
-                updateDoc(userRef, {
-                  avatar: `avatars/${user.id}`,
-                })
-              }
-            }}
-          />
-          <IconButton
-            aria-label='Upload avatar'
-            size='lg'
-            icon={<CloudUploadOutlined />}
-            w='full'
-            onClick={() => fileRef.current?.click()}
-          ></IconButton>
+          <PhotoField name={'avatar'} onChange={onAvatarUpload} />
         </VStack>
       ) : null}
     </>

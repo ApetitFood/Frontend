@@ -1,10 +1,11 @@
-import { Text, SimpleGrid, Box, AspectRatio, Image } from '@chakra-ui/react'
-import { collection, query, getDocs } from '@firebase/firestore'
-import { useEffect, useState } from 'react'
-
+import { Text, SimpleGrid, Box, AspectRatio, Image , Spinner} from '@chakra-ui/react'
+import { collection, query, getDocs, limit, orderBy, startAfter } from '@firebase/firestore'
+import React, { useEffect, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { firebaseDb } from '@/firebase'
 import { Recipe } from '@/types/recipe'
 import { downloadFile } from '@/utils'
+
 
 const FeedBox = ({
   recipe: { title, ingredients, photo },
@@ -51,9 +52,7 @@ const FeedBox = ({
             ></Image>
           </AspectRatio>
           <div className='feed-text-container'>
-            {/* <Text>
-                    {json.Description}
-                </Text>
+            {/* 
                 <Text>
                     <Text margin={'0.5em 0'} fontWeight={'bold'}>Recipe steps:</Text>
                     <ol>
@@ -89,11 +88,12 @@ const FeedBox = ({
 const Feed = () => {
   const columns = [1, 2, 3]
   const [isLoading, setIsLoading] = useState(true)
+  const [lastKey, setLastKey] = useState("");
   const [recipes, setRecipes] = useState<Recipe[]>([])
-
-  useEffect(() => {
+  const [hasMore, setHasMore] = useState(false)
+  
     const getRecipes = async () => {
-      const data = await getDocs(query(collection(firebaseDb, 'recipes')))
+      const data = await getDocs(query(collection(firebaseDb, 'recipes'),orderBy("title"),limit(6)))
       data.forEach((doc) => {
         const recipeData = doc.data() as Recipe
         setRecipes((currentValues) => [
@@ -101,24 +101,63 @@ const Feed = () => {
           { ...recipeData, id: doc.id },
         ])
       })
-
+      if(data.docs.length > 5 )
+        setHasMore(true)
+      setLastKey(data.docs.at(data.docs.length-1)?.data().title)
       setIsLoading(false)
     }
+    const getNextRecipes = async () => {        
+        const data = await getDocs(query(collection(firebaseDb, 'recipes'),orderBy('title'),startAfter(lastKey),limit(6npm)))
+        data.forEach((doc) => {
+          const recipeData = doc.data() as Recipe
+          setRecipes((currentValues) => [
+            ...currentValues,
+            { ...recipeData, id: doc.id },
+          ])
+        })
+        if(data.docs.length < 7 )
+            setHasMore(false) 
+        setLastKey(data.docs.at(data.docs.length-1)?.data().title)
+        setIsLoading(false)
+      }
 
-    setIsLoading(true)
-    getRecipes()
-  }, [])
-
+    useEffect(() => { 
+        getRecipes() 
+    }, [])
+        
   return (
-    <>
-      {!isLoading ? (
-        <SimpleGrid columns={columns} templateRows={'masonry'}>
+    <div>
+      <InfiniteScroll
+        dataLength={recipes.length} //This is important field to render the next data
+        next={getNextRecipes}
+        hasMore={true}
+        loader={hasMore ? <Spinner></Spinner> : null}
+        endMessage={
+          <p style={{ textAlign: 'center' }}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+      >
+         <SimpleGrid   columns={columns} templateRows={'masonry'}>
+            {recipes.map((item) => {
+                return <FeedBox key={item.id} recipe={item}></FeedBox>
+              })}
+          </SimpleGrid>
+  </InfiniteScroll>
+
+      {/* {!isLoading ? (
+        <>
+        <SimpleGrid   columns={columns} templateRows={'masonry'}>
           {recipes.map((item) => {
             return <FeedBox key={item.id} recipe={item}></FeedBox>
           })}
+            <InView threshold={1} onChange={setInView}>    
+            </InView>
         </SimpleGrid>
-      ) : null}
-    </>
+        </>
+      ) : <Spinner></Spinner> } */}
+      
+    </div>
   )
 }
 

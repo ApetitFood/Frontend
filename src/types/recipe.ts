@@ -4,6 +4,7 @@ export type Recipe = {
   title: string
   directions: string
   ingredients: RecipeIngredient[]
+  createdAt: Date
   description?: string[]
   photo?: string
 }

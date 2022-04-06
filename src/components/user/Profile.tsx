@@ -1,7 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import {
-  Container,
   Center,
   Heading,
   Text,
@@ -36,7 +35,7 @@ const UserProfile = ({
   }
 
   return (
-    <Container mt={4}>
+    <>
       <Center>
         <VStack>
           <Heading>{`${user.firstName} ${user.lastName}`}</Heading>
@@ -48,14 +47,12 @@ const UserProfile = ({
         </VStack>
       </Center>
       <Divider p={10} />
-      <SimpleGrid columns={[1, 2, 3]} templateRows={'masonry'}>
-        {userRecipes.map((recipe) => {
-          return (
-            <RecipeComponent key={recipe.id} recipe={recipe}></RecipeComponent>
-          )
-        })}
+      <SimpleGrid columns={[1, 1, 2, 2, 3, 3]} templateRows={'masonry'}>
+        {userRecipes.map((recipe) => (
+          <RecipeComponent key={recipe.id} recipe={recipe}></RecipeComponent>
+        ))}
       </SimpleGrid>
-    </Container>
+    </>
   )
 }
 

@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, Timestamp } from 'firebase/firestore'
 import {
   Button,
   SimpleGrid,
@@ -83,6 +83,7 @@ const AddRecipeForm = () => {
             directions,
             ownerId: currentUser!.uid,
             photo: recipePhoto,
+            createdAt: Timestamp.now(),
           })
         } catch (error) {
           console.warn(error)

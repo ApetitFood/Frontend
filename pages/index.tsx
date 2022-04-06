@@ -1,13 +1,11 @@
 import type { NextPage } from 'next'
-import { Container, Heading } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { useAuth } from '@/context/AuthContext'
 import { protectRoute } from '@/utils'
 import AddRecipeModal from '@/components/recipe/AddRecipeModal'
-
-import Feed from '@/components/Feed'
+import Feed from '@/components/recipe/Feed'
 
 const Home: NextPage = () => {
   const { currentUser } = useAuth()
@@ -20,10 +18,10 @@ const Home: NextPage = () => {
   }, [currentUser, router])
 
   return !loading && currentUser ? (
-    <Container maxW='container.l' p={0}>
+    <>
       <AddRecipeModal />
       <Feed />
-    </Container>
+    </>
   ) : null
 }
 

@@ -37,7 +37,6 @@ const Feed = () => {
           orderBy('createdAt', 'desc'),
           limit(6)
         )
-
     const data = await getDocs(fetchQuery)
     const docs = data.docs
     await Promise.all(

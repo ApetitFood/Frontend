@@ -104,11 +104,24 @@ const Feed = () => {
   const [lastKey, setLastKey] = useState('')
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [hasMore, setHasMore] = useState(false)
+  const [isRenderingComponents, setIsRenderingComponents] = useState(false)
 
   const getRecipes = async () => {
-    const data = await getDocs(
-      query(collection(firebaseDb, 'recipes'), orderBy('title'), limit(6))
-    )
+    const fetchQuery = recipes.length
+      ? query(
+          collection(firebaseDb, 'recipes'),
+          orderBy('createdAt', 'desc'),
+          startAfter(lastKey),
+          limit(6)
+        )
+      : query(
+          collection(firebaseDb, 'recipes'),
+          orderBy('createdAt', 'desc'),
+          limit(6)
+        )
+
+    const data = await getDocs(fetchQuery)
+
     data.forEach((doc) => {
       const recipeData = doc.data() as Recipe
       setRecipes((currentValues) => [
@@ -116,66 +129,41 @@ const Feed = () => {
         { ...recipeData, id: doc.id },
       ])
     })
-    if (data.docs.length > 5) setHasMore(true)
-    setLastKey(data.docs.at(data.docs.length - 1)?.data().title)
-    setIsLoading(false)
-  }
-  const getNextRecipes = async () => {
-    const data = await getDocs(
-      query(
-        collection(firebaseDb, 'recipes'),
-        orderBy('title'),
-        startAfter(lastKey),
-        limit(6)
-      )
-    )
-    data.forEach((doc) => {
-      const recipeData = doc.data() as Recipe
-      setRecipes((currentValues) => [
-        ...currentValues,
-        { ...recipeData, id: doc.id },
-      ])
-    })
-    if (data.docs.length < 7) setHasMore(false)
-    setLastKey(data.docs.at(data.docs.length - 1)?.data().title)
+    const docs = data.docs
+
+    setHasMore(docs.length >= 6)
+    setLastKey(docs.at(docs.length - 1)?.data().createdAt)
     setIsLoading(false)
   }
 
   useEffect(() => {
+    setIsLoading(true)
     getRecipes()
   }, [])
 
   return (
     <div>
-      <InfiniteScroll
-        dataLength={recipes.length} //This is important field to render the next data
-        next={getNextRecipes}
-        hasMore={true}
-        loader={hasMore ? <Spinner></Spinner> : null}
-        endMessage={
-          <p style={{ textAlign: 'center' }}>
-            <b>Yay! You have seen it all</b>
-          </p>
-        }
-      >
-        <SimpleGrid columns={columns} templateRows={'masonry'}>
-          {recipes.map((item) => {
-            return <FeedBox key={item.id} recipe={item}></FeedBox>
-          })}
-        </SimpleGrid>
-      </InfiniteScroll>
-
-      {/* {!isLoading ? (
-        <>
-        <SimpleGrid   columns={columns} templateRows={'masonry'}>
-          {recipes.map((item) => {
-            return <FeedBox key={item.id} recipe={item}></FeedBox>
-          })}
-            <InView threshold={1} onChange={setInView}>    
-            </InView>
-        </SimpleGrid>
-        </>
-      ) : <Spinner></Spinner> } */}
+      {!isLoading ? (
+        <InfiniteScroll
+          dataLength={recipes.length}
+          next={getRecipes}
+          hasMore={hasMore}
+          loader={isLoading ? <Spinner /> : null}
+          endMessage={
+            <p style={{ textAlign: 'center' }}>
+              <b>Yay! You have seen it all</b>
+            </p>
+          }
+        >
+          <SimpleGrid columns={columns} templateRows={'masonry'}>
+            {recipes.map((item) => {
+              return <FeedBox key={item.id} recipe={item}></FeedBox>
+            })}
+          </SimpleGrid>
+        </InfiniteScroll>
+      ) : (
+        <Spinner />
+      )}
     </div>
   )
 }

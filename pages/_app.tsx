@@ -1,5 +1,5 @@
 import type { AppProps } from 'next/app'
-import { ChakraProvider } from '@chakra-ui/react'
+import { Box, ChakraProvider, Container } from '@chakra-ui/react'
 
 import theme from '@/themes'
 import '@/themes/styles.css'
@@ -14,7 +14,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ChakraProvider theme={theme}>
       <AuthProvider isPageProtected={pageIsProtected}>
         {pageIsProtected && <Header />}
-        <Component {...pageProps} />
+        <Container maxW='container.l' p={0} centerContent>
+          <Box py={5} maxW='60%'>
+            <Component {...pageProps} />
+          </Box>
+        </Container>
         {pageIsProtected && <Footer />}
       </AuthProvider>
     </ChakraProvider>

@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-import { Container, Heading } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
@@ -19,10 +18,10 @@ const Home: NextPage = () => {
   }, [currentUser, router])
 
   return !loading && currentUser ? (
-    <Container maxW='container.l' p={0}>
+    <>
       <AddRecipeModal />
       <Feed />
-    </Container>
+    </>
   ) : null
 }
 

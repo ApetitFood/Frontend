@@ -10,7 +10,7 @@ import RecipeComponent from '@/components/recipe/Recipe'
 import { downloadFile } from '@/utils'
 
 const Feed = () => {
-  const columns = [1, 2, 3]
+  const columns = [1, 1, 2, 2, 3, 3]
   const [isLoading, setIsLoading] = useState(true)
   const [lastKey, setLastKey] = useState('')
   const [recipes, setRecipes] = useState<Recipe[]>([])
@@ -24,7 +24,6 @@ const Feed = () => {
   }
 
   const getRecipes = async () => {
-    console.log('being called')
     setIsFetching(true)
     const fetchQuery = recipes.length
       ? query(

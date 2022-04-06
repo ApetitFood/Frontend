@@ -9,12 +9,13 @@ import {
   where,
   getDocs,
 } from '@firebase/firestore'
-import { Spinner, Container } from '@chakra-ui/react'
+import { Spinner } from '@chakra-ui/react'
 
 import type { User } from '@/types'
 import { firebaseDb } from '@/firebase'
 import UserProfile from '@/components/user/Profile'
 import { Recipe } from '@/types/recipe'
+import { downloadFile } from '@/utils'
 
 const User: NextPage = () => {
   const router = useRouter()
@@ -39,13 +40,19 @@ const User: NextPage = () => {
       const data = await getDocs(
         query(collection(firebaseDb, 'recipes'), where('ownerId', '==', id))
       )
-      data.forEach((doc) => {
-        const recipeData = doc.data() as Recipe
-        setUserRecipes((currentValues) => [
-          ...currentValues,
-          { ...recipeData, id: doc.id },
-        ])
-      })
+      const docs = data.docs
+      await Promise.all(
+        docs.map(async (doc) => {
+          const recipeData = doc.data() as Recipe
+          const photoPath = recipeData.photo || 'recipes/default.jpg'
+          const recipePhoto = await downloadFile(photoPath)
+
+          setUserRecipes((currentValues) => [
+            ...currentValues,
+            { ...recipeData, id: doc.id, photo: recipePhoto },
+          ])
+        })
+      )
 
       setLoading(false)
     }
@@ -55,13 +62,13 @@ const User: NextPage = () => {
   }, [id, router])
 
   return (
-    <Container maxW='container.xl' pt={10} centerContent>
+    <>
       {loading ? (
         <Spinner />
       ) : (
         <UserProfile user={user!} userRecipes={userRecipes} />
       )}
-    </Container>
+    </>
   )
 }
 

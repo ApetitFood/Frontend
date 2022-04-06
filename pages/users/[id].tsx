@@ -19,7 +19,7 @@ import { Recipe } from '@/types/recipe'
 const User: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
-  const [user, setUser] = useState<User>()
+  const [user, setUser] = useState<User | null>(null)
   const [userRecipes, setUserRecipes] = useState<Recipe[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -56,7 +56,11 @@ const User: NextPage = () => {
 
   return (
     <Container maxW='container.xl' pt={10} centerContent>
-      {loading ? <Spinner /> : <UserProfile user={user!} />}
+      {loading ? (
+        <Spinner />
+      ) : (
+        <UserProfile user={user!} userRecipes={userRecipes} />
+      )}
     </Container>
   )
 }

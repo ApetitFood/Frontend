@@ -15,9 +15,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       <AuthProvider isPageProtected={pageIsProtected}>
         {pageIsProtected && <Header />}
         <Container maxW='container.l' p={0} centerContent>
-          <Box py={5} maxW='60%'>
+          {pageIsProtected ? (
+            <Box py={5} maxW='60%'>
+              <Component {...pageProps} />
+            </Box>
+          ) : (
             <Component {...pageProps} />
-          </Box>
+          )}
         </Container>
         {pageIsProtected && <Footer />}
       </AuthProvider>

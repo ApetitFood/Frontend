@@ -8,14 +8,23 @@ import {
   VStack,
   Divider,
   Button,
+  SimpleGrid,
 } from '@chakra-ui/react'
 
 import { User } from '@/types'
 import { useAuth } from '@/context/AuthContext'
+import { Recipe } from '@/types/recipe'
+import RecipeComponent from '@/components/recipe/Recipe'
 
 import Avatar from './Avatar'
 
-const UserProfile = ({ user }: { user: User }) => {
+const UserProfile = ({
+  user,
+  userRecipes,
+}: {
+  user: User
+  userRecipes: Recipe[]
+}) => {
   const { logout } = useAuth()
   const router = useRouter()
 
@@ -39,9 +48,13 @@ const UserProfile = ({ user }: { user: User }) => {
         </VStack>
       </Center>
       <Divider p={10} />
-      <Text pt={5} textAlign='center'>
-        You will see your posts here in near future
-      </Text>
+      <SimpleGrid columns={[1, 2, 3]} templateRows={'masonry'}>
+        {userRecipes.map((recipe) => {
+          return (
+            <RecipeComponent key={recipe.id} recipe={recipe}></RecipeComponent>
+          )
+        })}
+      </SimpleGrid>
     </Container>
   )
 }

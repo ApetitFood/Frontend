@@ -1,102 +1,12 @@
-import {
-  Text,
-  SimpleGrid,
-  Box,
-  AspectRatio,
-  Image,
-  Spinner,
-} from '@chakra-ui/react'
-import {
-  collection,
-  query,
-  getDocs,
-  limit,
-  orderBy,
-  startAfter,
-} from '@firebase/firestore'
-import React, { useEffect, useState } from 'react'
+import { SimpleGrid, Spinner } from '@chakra-ui/react'
+import { collection, query, getDocs } from '@firebase/firestore'
+import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
+
 import { firebaseDb } from '@/firebase'
 import { Recipe } from '@/types/recipe'
-import { downloadFile } from '@/utils'
-
-const FeedBox = ({
-  recipe: { title, ingredients, photo },
-}: {
-  recipe: Recipe
-}) => {
-  const [recipePhoto, setRecipePhoto] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    const retrieveRecipePhoto = async () => {
-      const photoPath = photo || 'recipes/default.jpg'
-      const recipePhoto = await downloadFile(photoPath)
-      setRecipePhoto(recipePhoto)
-      setIsLoading(false)
-    }
-
-    setIsLoading(true)
-    retrieveRecipePhoto()
-  }, [photo])
-  return (
-    <>
-      {!isLoading ? (
-        <Box
-          height={'fit-content'}
-          margin={'10px'}
-          border='solid 1px rgba(0,0,0, .25)'
-        >
-          <Text className='text-container-align-middle'>
-            <Text
-              className='text-align-middle'
-              borderBottom={'solid 1px rgba(0,0,0, .25);'}
-            >
-              {title}
-            </Text>
-          </Text>
-
-          <AspectRatio ratio={4 / 3} maxH={400}>
-            <Image
-              src={recipePhoto}
-              alt='Recipe'
-              boxSize='100px'
-              objectFit='cover'
-            ></Image>
-          </AspectRatio>
-          <div className='feed-text-container'>
-            {/* 
-                <Text>
-                    <Text margin={'0.5em 0'} fontWeight={'bold'}>Recipe steps:</Text>
-                    <ol>
-                        {steps.map((steps) => {
-                            return <li>{steps}</li>
-                        })}
-                    </ol>
-                </Text> */}
-            <Text>
-              <Text margin={'0.5em 0'} fontWeight={'bold'}>
-                Macronutrients:
-              </Text>
-              {
-                <ul>
-                  {ingredients.map((ingredient, id) => {
-                    return (
-                      <li key={id}>
-                        {ingredient.product} {ingredient.amount}{' '}
-                        {ingredient.measurement}
-                      </li>
-                    )
-                  })}
-                </ul>
-              }
-            </Text>
-          </div>
-        </Box>
-      ) : null}
-    </>
-  )
-}
+import RecipeComponent from '@/components/recipe/Recipe'
+import { limit, orderBy, startAfter } from 'firebase/firestore'
 
 const Feed = () => {
   const columns = [1, 2, 3]
@@ -157,7 +67,9 @@ const Feed = () => {
         >
           <SimpleGrid columns={columns} templateRows={'masonry'}>
             {recipes.map((item) => {
-              return <FeedBox key={item.id} recipe={item}></FeedBox>
+              return (
+                <RecipeComponent key={item.id} recipe={item}></RecipeComponent>
+              )
             })}
           </SimpleGrid>
         </InfiniteScroll>

@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react'
 
 import { useAuth } from '@/context/AuthContext'
-import TextField from '@/components/TextField'
+import TextField from '@/components/form/TextField'
 import { firebaseDb } from '@/firebase'
 import { UserModesEnum } from '@/types'
 
@@ -84,7 +84,7 @@ const RegisterForm = () => {
             mode,
           })
         } catch (error) {
-          console.log(error)
+          console.warn(error)
           setError('Failed to create an account. Please try again later')
         }
 

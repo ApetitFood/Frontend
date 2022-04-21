@@ -1,19 +1,29 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import {
-  Container,
   Center,
   Heading,
   Text,
   VStack,
   Divider,
   Button,
+  SimpleGrid,
 } from '@chakra-ui/react'
 
-import { User } from '../../types'
-import { useAuth } from '../../context/AuthContext'
+import { User } from '@/types'
+import { useAuth } from '@/context/AuthContext'
+import { Recipe } from '@/types/recipe'
+import RecipeComponent from '@/components/recipe/Recipe'
 
-const UserProfile = ({ user }: { user: User }) => {
+import Avatar from './Avatar'
+
+const UserProfile = ({
+  user,
+  userRecipes,
+}: {
+  user: User
+  userRecipes: Recipe[]
+}) => {
   const { logout } = useAuth()
   const router = useRouter()
 
@@ -25,21 +35,24 @@ const UserProfile = ({ user }: { user: User }) => {
   }
 
   return (
-    <Container mt={4}>
+    <>
       <Center>
         <VStack>
           <Heading>{`${user.firstName} ${user.lastName}`}</Heading>
           <Text>{`Mode: ${user.mode}`}</Text>
+          <Avatar user={user} />
           <Button variant='alarm' width='full' onClick={handleLogout}>
             Log out
           </Button>
         </VStack>
       </Center>
       <Divider p={10} />
-      <Text pt={5} textAlign='center'>
-        You will see your posts here in near future
-      </Text>
-    </Container>
+      <SimpleGrid columns={[1, 1, 2, 2, 3, 3]} templateRows={'masonry'}>
+        {userRecipes.map((recipe) => (
+          <RecipeComponent key={recipe.id} recipe={recipe}></RecipeComponent>
+        ))}
+      </SimpleGrid>
+    </>
   )
 }
 

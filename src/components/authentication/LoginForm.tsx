@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react'
 
 import { useAuth } from '@/context/AuthContext'
-import TextField from '@/components/TextField'
+import TextField from '@/components/form/TextField'
 
 import AuthPageLogo from './AuthenticationPageLogo'
 
@@ -64,7 +64,7 @@ const LoginForm = () => {
           setLoading(true)
           await login(email, password)
         } catch (error) {
-          console.log(error)
+          console.warn(error)
           setError('Failed to login. Please try again later')
         }
 

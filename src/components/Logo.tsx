@@ -1,5 +1,7 @@
+import { Image, Link } from "@chakra-ui/react"
+
 const Logo = () => {
-    return null
+    return (<Link href="/"><Image src="logo.png" height={'40px'}></Image></Link>)
 }
 
 export default Logo

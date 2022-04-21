@@ -5,6 +5,8 @@ import { useAuth } from '@/context/AuthContext'
 
 import { Mobile, ButtonLink } from './Menu'
 
+import Logo from './Logo'
+
 function Header() {
   const { currentUser } = useAuth()
 
@@ -13,7 +15,7 @@ function Header() {
       {currentUser ? (
         <Flex>
           <Box>
-            <ButtonLink link='/' name={<HomeOutlined />} />
+            <Logo></Logo>
           </Box>
           <Spacer />
           <Box>

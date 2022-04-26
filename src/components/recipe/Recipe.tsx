@@ -1,13 +1,12 @@
 import { Text, Box, AspectRatio, Image, Link } from '@chakra-ui/react'
-
 import { Recipe } from '@/types/recipe'
-//import Link from 'next/link'
 
 const Recipe = ({
   recipe: { title, ingredients, photo, id },
 }: {
   recipe: Recipe
-}) => (
+}) => {
+return (
   <Box
     height={'fit-content'}
     margin={'10px'}
@@ -49,5 +48,6 @@ const Recipe = ({
     </div>
   </Box>
 )
+}
 
 export default Recipe

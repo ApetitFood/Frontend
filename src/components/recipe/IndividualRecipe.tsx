@@ -1,16 +1,9 @@
 import React from 'react'
-import { useRouter } from 'next/router'
 import {
   Image,
   Container,
-  Center,
-  Heading,
   Text,
-  VStack,
-  Divider,
-  Button,
   Box,
-  AspectRatio,
   Checkbox,
   Spacer,
 } from '@chakra-ui/react'
@@ -28,7 +21,7 @@ const IndividualRecipe = ({
 
     const [recipePhoto, setRecipePhoto] = useState('')
     const [isLoading, setIsLoading] = useState(true)
-  
+
     useEffect(() => {
       const retrieveRecipePhoto = async () => {
         const photoPath = recipe.photo || 'recipes/default.jpg'
@@ -36,11 +29,10 @@ const IndividualRecipe = ({
         setRecipePhoto(recipePhoto)
         setIsLoading(false)
       }
-  
-      setIsLoading(true)
-      retrieveRecipePhoto()
-    }, [])
 
+      retrieveRecipePhoto()
+      
+    }, [])
     
 
   return (

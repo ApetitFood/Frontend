@@ -19,9 +19,7 @@ const User: NextPage = () => {
 
   useEffect(() => {
     const getRecipe = async () => {
-      console.log(id)
-      const data = await getDoc(doc(firebaseDb, 'recipes', id as string))
-      console.log(data.data())   
+      const data = await getDoc(doc(firebaseDb, 'recipes', id as string)) 
       const recipeData = data.data()
          if (recipeData) {
            setRecipe({ ...recipeData, id } as Recipe)

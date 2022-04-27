@@ -23,6 +23,7 @@ import { uploadFile } from '@/utils'
 
 import IngredientsInput from './IngredientsInput'
 import DirectionInput from './DirectionInput'
+import { searchIndex } from '@/searchClient'
 
 const AddRecipeForm = () => {
   const { onClose } = useDisclosure()
@@ -76,7 +77,7 @@ const AddRecipeForm = () => {
           setError('')
           setLoading(true)
 
-          await addDoc(collection(firebaseDb, 'recipes'), {
+          const recipe = {
             title,
             description,
             ingredients,
@@ -84,7 +85,12 @@ const AddRecipeForm = () => {
             ownerId: currentUser!.uid,
             photo: recipePhoto,
             createdAt: Timestamp.now(),
-          })
+          }
+          const response = await addDoc(
+            collection(firebaseDb, 'recipes'),
+            recipe
+          )
+          // await searchIndex.saveObject({ ...recipe, objectID: response.id })
         } catch (error) {
           console.warn(error)
           setError('Failed to post a new recipe. Please try again later')

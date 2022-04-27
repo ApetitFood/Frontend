@@ -3,7 +3,8 @@ import { Recipe } from '@/types/recipe'
 import Link from 'next/link'
 
 const Recipe = ({ recipe }: { recipe: Recipe }) => {
-  let pathName: string = `recipes/${recipe.id}`
+  const pathName: string = `recipes/${recipe.id}`
+
   return (
     <Box
       height={'fit-content'}
@@ -47,8 +48,9 @@ const Recipe = ({ recipe }: { recipe: Recipe }) => {
               {recipe.ingredients.map((ingredient, id) => {
                 return (
                   <li key={id}>
-                    {ingredient.product} {ingredient.amount}{' '}
-                    {ingredient.measurement}
+                    {typeof ingredient === 'string'
+                      ? ingredient
+                      : `${ingredient.product} ${ingredient.amount} ${ingredient.measurement}`}
                   </li>
                 )
               })}

@@ -13,10 +13,12 @@ const Recipe: NextPage = () => {
   const { indRecipe, id } = router.query
   const [recipe, setRecipe] = useState<Recipe>()
   const [loading, setLoading] = useState(true)
+  const isFullRecipe =
+    (indRecipe as any)?.directions && (indRecipe as any)?.ownerId
 
   useEffect(() => {
     const getRecipe = async () => {
-      if (indRecipe == undefined) {
+      if (!indRecipe || !isFullRecipe) {
         const data = await getDoc(doc(firebaseDb, 'recipes', id as string))
         const recipeData = data.data()
         if (recipeData) {
@@ -30,7 +32,7 @@ const Recipe: NextPage = () => {
       }
     }
     getRecipe()
-  }, [id, router])
+  }, [id, indRecipe, router])
 
   return <>{loading ? <Spinner /> : <IndividualRecipe recipe={recipe!} />}</>
 }

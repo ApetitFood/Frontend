@@ -69,7 +69,7 @@ const LoginForm = () => {
         }
 
         setLoading(false)
-        router.push('/')
+        router.replace('/')
       }}
     >
       {(formik) => (

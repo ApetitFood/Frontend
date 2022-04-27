@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { useRouter } from 'next/router'
 import {
   Box,
   Button,
@@ -14,7 +13,6 @@ import {
   GridItem,
   Alert,
   AlertIcon,
-  Divider,
   Show,
 } from '@chakra-ui/react'
 
@@ -23,53 +21,47 @@ import TextField from '@/components/form/TextField'
 
 import AuthPageLogo from './AuthenticationPageLogo'
 
-const LoginHeader = () => {
+const ForgotPasswordHeader = () => {
   return (
     <Box textAlign='center' w='full'>
       <Heading size='2xl' fontFamily='Shadows into light'>
-        Sign In
+        Recover Password
       </Heading>
     </Box>
   )
 }
 
-const LoginForm = () => {
-  const { login } = useAuth()
-  const router = useRouter()
+const ForgotPasswordForm = () => {
+  const { resetPassword } = useAuth()
   const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
 
   return (
     <Formik
       initialValues={{
         email: '',
-        password: '',
       }}
       validationSchema={yup.object({
         email: yup
           .string()
           .email('Must be a valid email')
           .required('Email is required'),
-        password: yup.string().required('Password is required'),
       })}
-      onSubmit={async ({
-        email,
-        password,
-      }: {
-        email: string
-        password: string
-      }) => {
+      onSubmit={async ({ email }: { email: string }) => {
         try {
           setError('')
           setLoading(true)
-          await login(email, password)
+          await resetPassword(email)
         } catch (error) {
           console.warn(error)
-          setError('Failed to login. Please try again later')
+          setError('Failed to reset password. Please try again later')
         }
 
         setLoading(false)
-        router.push('/')
+        setMessage(
+          `Check your email for instructions on how to recover you password. Email usually arrives within 5 minutes`
+        )
       }}
     >
       {(formik) => (
@@ -82,13 +74,6 @@ const LoginForm = () => {
                 type='email'
               />
             </GridItem>
-            <GridItem colSpan={2}>
-              <TextField
-                name='password'
-                placeholder='Please enter password'
-                type='password'
-              />
-            </GridItem>
 
             <GridItem colSpan={2}>
               <Button
@@ -98,7 +83,7 @@ const LoginForm = () => {
                 mt={4}
                 type='submit'
               >
-                Sign in
+                Reset password
               </Button>
             </GridItem>
             {error && (
@@ -109,6 +94,14 @@ const LoginForm = () => {
                 </Alert>
               </GridItem>
             )}
+            {message && (
+              <GridItem colSpan={2}>
+                <Alert status='success'>
+                  <AlertIcon />
+                  {message}
+                </Alert>
+              </GridItem>
+            )}
           </SimpleGrid>
         </form>
       )}
@@ -116,21 +109,22 @@ const LoginForm = () => {
   )
 }
 
-const LoginFooter = () => {
+const ForgotPasswordFooter = () => {
   return (
-    <Flex w='full' direction='column'>
+    <Flex w='full' direction='row'>
       <Box textAlign='start' w='full'>
-        <Link color={'teal.500'} href='/forgot-password'>
-          Forgot your password?
-        </Link>
-      </Box>
-      <Divider py={2} />
-      <Box textAlign='end' w='full'>
-        <Divider />
         <Text>
-          Do not have an account yet?{' '}
-          <Link color={'teal.500'} href='/register'>
+          Do not have an account yet?
+          <Link color={'teal.500'} pl={2} href='/register'>
             sign up
+          </Link>
+        </Text>
+      </Box>
+      <Box textAlign='end' w='full'>
+        <Text>
+          Remembered your password?
+          <Link color={'teal.500'} pl={2} href='/login'>
+            sign in
           </Link>
         </Text>
       </Box>
@@ -138,7 +132,7 @@ const LoginFooter = () => {
   )
 }
 
-const Login = () => {
+const ForgotPassword = () => {
   return (
     <Flex
       h={{ base: 'auto', md: '100vh' }}
@@ -159,12 +153,12 @@ const Login = () => {
         justify='center'
         border={'1px'}
       >
-        <LoginHeader />
-        <LoginForm />
-        <LoginFooter />
+        <ForgotPasswordHeader />
+        <ForgotPasswordForm />
+        <ForgotPasswordFooter />
       </VStack>
     </Flex>
   )
 }
 
-export default Login
+export default ForgotPassword

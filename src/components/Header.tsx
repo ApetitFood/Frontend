@@ -4,6 +4,8 @@ import { useAuth } from '@/context/AuthContext'
 
 import { Menu, ButtonLink } from './Menu'
 
+import Logo from './Logo'
+
 function Header() {
   const { currentUser } = useAuth()
   const [isMobile] = useMediaQuery('(max-width: 768px)')
@@ -12,7 +14,7 @@ function Header() {
       {currentUser ? (
         <Flex w='60%' justifyContent='space-between'>
           <Box>
-            <ButtonLink link='/' name={<HomeOutlined />} />
+            <Logo></Logo>
           </Box>
           <Box>
             <Menu showMenu={!isMobile} />

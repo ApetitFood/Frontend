@@ -9,10 +9,14 @@ import Footer from '@/components/Footer'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const pageIsProtected = pageProps.protected
+  const isAuthenticationPage = pageProps.authPage
 
   return (
     <ChakraProvider theme={theme}>
-      <AuthProvider isPageProtected={pageIsProtected}>
+      <AuthProvider
+        isPageProtected={pageIsProtected}
+        isAuthenticationPage={isAuthenticationPage}
+      >
         {pageIsProtected && <Header />}
         <Container maxW='container.l' p={0} centerContent>
           {pageIsProtected ? (

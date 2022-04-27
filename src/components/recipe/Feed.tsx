@@ -37,7 +37,6 @@ const Feed = () => {
           orderBy('createdAt', 'desc'),
           limit(6)
         )
-
     const data = await getDocs(fetchQuery)
     const docs = data.docs
     await Promise.all(
@@ -78,8 +77,11 @@ const Feed = () => {
           }
         >
           <SimpleGrid columns={columns} templateRows={'masonry'}>
-            {recipes.map((item) => (
-              <RecipeComponent key={item.id} recipe={item}></RecipeComponent>
+            {recipes.map((recipe) => (
+              <RecipeComponent
+                key={recipe.id}
+                recipe={recipe}
+              ></RecipeComponent>
             ))}
           </SimpleGrid>
         </InfiniteScroll>

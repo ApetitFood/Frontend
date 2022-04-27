@@ -29,9 +29,11 @@ export const useAuth = () => {
 export const AuthProvider = ({
   children,
   isPageProtected,
+  isAuthenticationPage,
 }: {
   children: any
   isPageProtected: boolean
+  isAuthenticationPage: boolean
 }) => {
   const router = useRouter()
 
@@ -73,12 +75,13 @@ export const AuthProvider = ({
     }
 
     const checkRoutes = async () => {
+      console.log()
       if (!userLoggedIn && isPageProtected) {
         await router.push('/login')
         return
       }
 
-      if (userLoggedIn && !isPageProtected) {
+      if (userLoggedIn && isAuthenticationPage) {
         await router.push('/')
         return
       }
@@ -87,7 +90,13 @@ export const AuthProvider = ({
     }
 
     checkRoutes()
-  }, [userLoggedIn, isPageProtected, router, initRendered])
+  }, [
+    userLoggedIn,
+    isPageProtected,
+    isAuthenticationPage,
+    router,
+    initRendered,
+  ])
 
   const value = {
     currentUser,

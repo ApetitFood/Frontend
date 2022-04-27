@@ -78,7 +78,7 @@ const Feed = () => {
         >
           <SimpleGrid columns={columns} templateRows={'masonry'}>
             {recipes.map((item) => (
-              <RecipeComponent key={item.id} recipe={item}></RecipeComponent>
+              <RecipeComponent recipe={item}></RecipeComponent>
             ))}
           </SimpleGrid>
         </InfiniteScroll>

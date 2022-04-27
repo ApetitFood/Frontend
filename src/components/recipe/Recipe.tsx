@@ -1,31 +1,36 @@
-import { Text, Box, AspectRatio, Image, Link } from '@chakra-ui/react'
+import { Text, Box, AspectRatio, Image, Button } from '@chakra-ui/react'
 import { Recipe } from '@/types/recipe'
+import Link from 'next/link'
+import { useState } from 'react'
 
-const Recipe = ({
-  recipe: { title, ingredients, photo, id },
-}: {
-  recipe: Recipe
-}) => {
+const Recipe : React.FC<{ recipe: Recipe }> = (
+  props
+) => {
+  let pathName: string = `recipes/${props.recipe.id}`
 return (
   <Box
     height={'fit-content'}
     margin={'10px'}
     border='solid 1px rgba(0,0,0, .25)'
   >
-  <Link href={`recipes/${id}`}>
-    <Box className='text-container-align-middle'>
+    
+    
+    <Link 
+      href={{
+        pathname: pathName,
+        query: { indRecipe:  JSON.stringify(props.recipe!) }
+      }} 
+    ><Box><Box className='text-container-align-middle'>
         <Text
           className='text-align-middle'
           borderBottom={'solid 1px rgba(0,0,0, .25);'}
         >
-          {title}
+          {props.recipe.title}
         </Text>
       </Box>
-
       <AspectRatio ratio={4 / 3} maxH={400}>
-        <Image src={photo} alt='Recipe' boxSize='100px' objectFit='cover'></Image>
-      </AspectRatio>
-    </Link>
+        <Image src={props.recipe.photo} alt='Recipe' boxSize='100px' objectFit='cover'></Image>
+      </AspectRatio></Box></Link>
     <div className='feed-text-container'>
       
       <Box>
@@ -34,7 +39,7 @@ return (
         </Text>
         {
           <ul>
-            {ingredients.map((ingredient, id) => {
+            {props.recipe!.ingredients.map((ingredient, id) => {
               return (
                 <li key={id}>
                   {ingredient.product} {ingredient.amount}{' '}

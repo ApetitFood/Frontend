@@ -13,26 +13,31 @@ import IndividualRecipe from '@/components/recipe/IndividualRecipe'
 
 const User: NextPage = () => {
   const router = useRouter()
-  const { id } = router.query
+  const { indRecipe, id } = router.query
   const [recipe, setRecipe] = useState<Recipe>()
   const [loading, setLoading] = useState(true)
-
+  
   useEffect(() => {
     const getRecipe = async () => {
-      const data = await getDoc(doc(firebaseDb, 'recipes', id as string)) 
-      const recipeData = data.data()
-         if (recipeData) {
-           setRecipe({ ...recipeData, id } as Recipe)
-           setLoading(false)
-           return
-         }
+      if(indRecipe == undefined){
+        const data = await getDoc(doc(firebaseDb, 'recipes', id as string)) 
+        const recipeData = data.data()
+          if (recipeData) {
+            setRecipe({ ...recipeData, id } as Recipe)
+            setLoading(false)
+            return
+          }
+      }else{
+        setRecipe(JSON.parse(indRecipe!.toString()) as Recipe)
+        setLoading(false)
+      }
+      
     }
     getRecipe()
   }, [id, router])
 
   return (
     <>
-
       {loading ? <Spinner /> : <IndividualRecipe recipe={recipe!} />}
     </>
   )
@@ -41,7 +46,7 @@ const User: NextPage = () => {
 export async function getServerSideProps() {
   return {
     props: {
-      protected: false,
+      protected: true,
     },
   }
 }

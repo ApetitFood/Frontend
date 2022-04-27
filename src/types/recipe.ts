@@ -2,10 +2,10 @@ export type Recipe = {
   id: string
   ownerId: string
   title: string
-  directions: string
+  directions: string[]
   ingredients: RecipeIngredient[]
   createdAt: Date
-  description?: string[]
+  description?: string
   photo?: string
 }
 

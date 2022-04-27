@@ -6,97 +6,84 @@ import {
   Box,
   Checkbox,
   Spacer,
+  Heading,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { Recipe } from '@/types/recipe'
 import { downloadFile } from '@/utils'
 
+const IndividualRecipe = ({ recipe }: { recipe: Recipe }) => {
+  const [recipePhoto, setRecipePhoto] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
 
+  useEffect(() => {
+    console.log('trigerred')
+    const retrieveRecipePhoto = async () => {
+      const photoPath = recipe.photo || 'recipes/default.jpg'
+      const recipePhoto = await downloadFile(photoPath)
+      setRecipePhoto(recipePhoto)
+      setIsLoading(false)
+    }
 
-const IndividualRecipe = ({
-  recipe,
-}: {
-  recipe: Recipe
-}) => {
-
-    const [recipePhoto, setRecipePhoto] = useState('')
-    const [isLoading, setIsLoading] = useState(true)
-
-    useEffect(() => {
-      const retrieveRecipePhoto = async () => {
-        const photoPath = recipe.photo || 'recipes/default.jpg'
-        const recipePhoto = await downloadFile(photoPath)
-        setRecipePhoto(recipePhoto)
-        setIsLoading(false)
-      }
-
-      retrieveRecipePhoto()
-      
-    }, [])
-    
+    retrieveRecipePhoto()
+  }, [recipe])
 
   return (
-    <>{!isLoading ? (
-    <Container width={'100%'}>
-      <Box className='text-container-align-middle'>
-        <Text
-          className='text-align-middle'
-         
-        >
-          {recipe.title}
-        </Text>
-      </Box>
-     
-        <Image 
-              width={'100%'}
-              src={recipePhoto}
-              alt='Recipe'
-              objectFit='cover'
-            >
+    <>
+      {!isLoading ? (
+        <Container width={'100%'}>
+          <Box pb={4} className='text-container-align-middle'>
+            <Heading className='text-align-middle'>{recipe.title}</Heading>
+          </Box>
 
-        </Image>
-      <Spacer p={2}/>
-      <Text>
-        {recipe.description}
-      </Text>
-      <Spacer p={2}/>
-      <Text>
-          <Text margin={'0.5em 0'} fontWeight={'bold'}>Recipe steps:</Text>
-          <ol>
-            {recipe.directions.map((direction, id) =>{
-              return (
-                <Box paddingBottom={'0.5em'}>
-                <li key={id}>
-                  {direction}
-                </li>
-                </Box>
-              )
-            })}
-          </ol>
-      </Text>
-      <Spacer p={2}/>
-      <Box>
-        <Text margin={'0.5em 0'} fontWeight={'bold'}>
-          Ingredients:
-        </Text>
-        {
-          <ul>
-            {recipe.ingredients.map((ingredient, id) => {
-              return (
-                  <Box paddingBottom={'0.5em'}>
-                    <Checkbox key={id} size='md' colorScheme='green' marginRight={'1em'}>
-                    {ingredient.product} {ingredient.amount}{' '}
-                      {ingredient.measurement}
-                    </Checkbox>
+          <Image
+            width={'100%'}
+            src={recipePhoto}
+            alt='Recipe'
+            objectFit='cover'
+          ></Image>
+          <Text py={5}>{recipe.description}</Text>
+          <Box pb={2}>
+            <Text pb={2} fontWeight={'bold'}>
+              You will need the following ingredients:
+            </Text>
+            {
+              <ul>
+                {recipe.ingredients.map(
+                  ({ product, amount, measurement }, id) => {
+                    return (
+                      <Box key={id} pb={2}>
+                        <Checkbox
+                          size='md'
+                          colorScheme='green'
+                          marginRight={'1em'}
+                        >
+                          {product} {amount} {measurement}
+                        </Checkbox>
+                      </Box>
+                    )
+                  }
+                )}
+              </ul>
+            }
+          </Box>
+          <Box>
+            <Text margin={'0.5em 0'} fontWeight={'bold'}>
+              Follow these steps to make the recipe:
+            </Text>
+            <ol>
+              {recipe.directions.map((direction, id) => {
+                return (
+                  <Box key={id} pb={3} pl={4}>
+                    <li>{direction}</li>
                   </Box>
-              )
-            })}
-          </ul>
-        }
-      </Box>
-      <Spacer p={2}/>
-    </Container>) : null}
-  </>
+                )
+              })}
+            </ol>
+          </Box>
+        </Container>
+      ) : null}
+    </>
   )
 }
 

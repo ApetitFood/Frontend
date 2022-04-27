@@ -17,7 +17,6 @@ const IndividualRecipe = ({ recipe }: { recipe: Recipe }) => {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    console.log('trigerred')
     const retrieveRecipePhoto = async () => {
       const photoPath = recipe.photo || 'recipes/default.jpg'
       const recipePhoto = await downloadFile(photoPath)

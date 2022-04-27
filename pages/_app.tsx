@@ -20,7 +20,9 @@ function MyApp({ Component, pageProps }: AppProps) {
               <Component {...pageProps} />
             </Box>
           ) : (
-            <Component {...pageProps} />
+            <Box w='80%'>
+              <Component {...pageProps} />
+            </Box>
           )}
         </Container>
         {pageIsProtected && <Footer />}

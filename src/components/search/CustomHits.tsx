@@ -13,8 +13,11 @@ export const Hits = ({ searchState, searchResults }: any) => {
       )}
       {searchResults?.hits?.length > 0 && validQuery && (
         <ol>
-          {searchResults?.hits.map((recipe: Recipe) => (
-            <RecipeComponent key={recipe.id} recipe={recipe}></RecipeComponent>
+          {searchResults?.hits.map((recipe: any) => (
+            <RecipeComponent
+              key={recipe.objectID}
+              recipe={{ ...recipe, id: recipe.objectID }}
+            ></RecipeComponent>
           ))}
         </ol>
       )}

@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 const Recipe = ({ recipe }: { recipe: Recipe }) => {
   const pathName: string = `recipes/${recipe.id}`
-  const isFullRecipe = recipe.directions && recipe.id && recipe.ownerId
+
   return (
     <Box
       height={'fit-content'}
@@ -14,7 +14,7 @@ const Recipe = ({ recipe }: { recipe: Recipe }) => {
       <Link
         href={{
           pathname: pathName,
-          query: { indRecipe: isFullRecipe ? JSON.stringify(recipe) : '' },
+          query: { indRecipe: JSON.stringify(recipe) },
         }}
         passHref
         as={pathName}
@@ -48,8 +48,9 @@ const Recipe = ({ recipe }: { recipe: Recipe }) => {
               {recipe.ingredients.map((ingredient, id) => {
                 return (
                   <li key={id}>
-                    {ingredient.product} {ingredient.amount}{' '}
-                    {ingredient.measurement}
+                    {typeof ingredient === 'string'
+                      ? ingredient
+                      : `${ingredient.product} ${ingredient.amount} ${ingredient.measurement}`}
                   </li>
                 )
               })}

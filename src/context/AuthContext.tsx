@@ -75,7 +75,6 @@ export const AuthProvider = ({
     }
 
     const checkRoutes = async () => {
-      console.log()
       if (!userLoggedIn && isPageProtected) {
         await router.replace('/login')
         return

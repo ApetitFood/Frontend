@@ -31,7 +31,7 @@ const UserProfile = ({
     event.preventDefault()
     await logout()
 
-    router.push('/login')
+    router.replace('/login')
   }
 
   return (

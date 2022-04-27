@@ -77,12 +77,12 @@ export const AuthProvider = ({
     const checkRoutes = async () => {
       console.log()
       if (!userLoggedIn && isPageProtected) {
-        await router.push('/login')
+        await router.replace('/login')
         return
       }
 
       if (userLoggedIn && isAuthenticationPage) {
-        await router.push('/')
+        await router.replace('/')
         return
       }
 

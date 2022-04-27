@@ -30,7 +30,7 @@ const Recipe: NextPage = () => {
       }
     }
     getRecipe()
-  }, [id, router])
+  }, [id, indRecipe, router])
 
   return <>{loading ? <Spinner /> : <IndividualRecipe recipe={recipe!} />}</>
 }

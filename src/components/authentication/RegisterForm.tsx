@@ -89,7 +89,7 @@ const RegisterForm = () => {
         }
 
         setLoading(false)
-        router.push('/')
+        router.replace('/')
       }}
     >
       {(formik) => (

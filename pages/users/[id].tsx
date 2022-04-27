@@ -33,7 +33,7 @@ const User: NextPage = () => {
         return
       }
 
-      router.push('/login')
+      router.replace('/login')
     }
 
     const getRecipes = async () => {

@@ -3,7 +3,8 @@ import { Recipe } from '@/types/recipe'
 import Link from 'next/link'
 
 const Recipe = ({ recipe }: { recipe: Recipe }) => {
-  let pathName: string = `recipes/${recipe.id}`
+  const pathName: string = `recipes/${recipe.id}`
+  const isFullRecipe = recipe.directions && recipe.id && recipe.ownerId
   return (
     <Box
       height={'fit-content'}
@@ -13,7 +14,7 @@ const Recipe = ({ recipe }: { recipe: Recipe }) => {
       <Link
         href={{
           pathname: pathName,
-          query: { indRecipe: JSON.stringify(recipe) },
+          query: { indRecipe: isFullRecipe ? JSON.stringify(recipe) : '' },
         }}
         passHref
         as={pathName}

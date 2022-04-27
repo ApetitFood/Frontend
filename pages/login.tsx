@@ -12,6 +12,7 @@ export async function getServerSideProps() {
   return {
     props: {
       protected: false,
+      authPage: true,
     },
   }
 }

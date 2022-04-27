@@ -11,7 +11,7 @@ import { firebaseDb } from '@/firebase'
 import { Recipe } from '@/types/recipe'
 import IndividualRecipe from '@/components/recipe/IndividualRecipe'
 
-const User: NextPage = () => {
+const Recipe: NextPage = () => {
   const router = useRouter()
   const { indRecipe, id } = router.query
   const [recipe, setRecipe] = useState<Recipe>()
@@ -51,4 +51,4 @@ export async function getServerSideProps() {
   }
 }
 
-export default User
+export default Recipe

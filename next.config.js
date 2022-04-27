@@ -10,6 +10,8 @@ const nextConfig = {
     FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
     FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID,
     FIREBASE_DATABASE_URL: process.env.FIREBASE_DATABASE_URL,
+    ALGOLIA_ID: process.env.ALGOLIA_ID,
+    ALGOLIA_ADMIN_KEY: process.env.ALGOLIA_ADMIN_KEY,
   },
 }
 

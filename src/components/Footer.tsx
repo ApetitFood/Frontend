@@ -1,14 +1,16 @@
-import { Flex, Box, useBreakpointValue } from '@chakra-ui/react'
+import { Flex, Box, useBreakpointValue, useMediaQuery } from '@chakra-ui/react'
 
-import { Mobile } from './Menu'
+import { Menu } from './Menu'
 
-function Footer() {
+const Footer = () => {
   const Height = useBreakpointValue({ base: '40px', md: '0px' })
+  const [showFooter] = useMediaQuery('(max-width: 768px)')
+
   return (
     <div>
       <Flex height={Height} justifyContent={'space-around'}>
         <Box position={'fixed'} bottom={'0px'}>
-          <Mobile header={false} />
+          <Menu showMenu={showFooter} />
         </Box>
       </Flex>
     </div>

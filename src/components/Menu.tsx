@@ -1,42 +1,37 @@
-import {
-  useMediaQuery,
-  IconButton,
-  Link,
-  useBreakpointValue,
-} from '@chakra-ui/react'
+import { IconButton, Link, useBreakpointValue } from '@chakra-ui/react'
 import {
   AccountBookFilled,
+  CompassOutlined,
   HeartOutlined,
-  SearchOutlined,
 } from '@ant-design/icons'
 import { JSXElementConstructor, ReactElement } from 'react'
 
-export function Mobile(props: { header: boolean }) {
-  const [isMobile] = useMediaQuery('(min-width: 768px)')
+export const Menu = ({ showMenu }: { showMenu: boolean }) => {
   return (
     <span>
-      {(props.header ? isMobile : !isMobile) ? (
+      {showMenu ? (
         <>
-          <ButtonLink link='/' name={<SearchOutlined />} />
+          <ButtonLink link='/explore' name={<CompassOutlined />} />
           <ButtonLink link='/' name={<HeartOutlined />} />
           <ButtonLink link='/' name={<AccountBookFilled />} />
         </>
-      ) : (
-        <span style={{ display: 'none' }}></span>
-      )}
+      ) : null}
     </span>
   )
 }
-export function ButtonLink(props: {
+export const ButtonLink = ({
+  link,
+  name,
+}: {
   link: string | undefined
   name: ReactElement<any, string | JSXElementConstructor<any>>
-}) {
+}) => {
   const iconSize = useBreakpointValue({ base: '24px', lg: '28px' })
   return (
-    <Link href={props.link}>
+    <Link href={link}>
       <IconButton
         aria-label=''
-        icon={props.name}
+        icon={name}
         variant='unstyled'
         fontSize={iconSize}
       ></IconButton>

@@ -1,13 +1,11 @@
 import { SimpleGrid, Spinner } from '@chakra-ui/react'
-import { collection, query, getDocs } from '@firebase/firestore'
+import { getDocs } from '@firebase/firestore'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { limit, orderBy, startAfter } from 'firebase/firestore'
 
-import { firebaseDb } from '@/firebase'
 import { Recipe } from '@/types/recipe'
 import RecipeComponent from '@/components/recipe/Recipe'
-import { downloadFile } from '@/utils'
+import { buildGetRecipesQuery, downloadFile } from '@/utils'
 
 const Feed = () => {
   const columns = [1, 1, 2, 2, 3, 3]
@@ -25,18 +23,10 @@ const Feed = () => {
 
   const getRecipes = async () => {
     setIsFetching(true)
-    const fetchQuery = recipes.length
-      ? query(
-          collection(firebaseDb, 'recipes'),
-          orderBy('createdAt', 'desc'),
-          startAfter(lastKey),
-          limit(6)
-        )
-      : query(
-          collection(firebaseDb, 'recipes'),
-          orderBy('createdAt', 'desc'),
-          limit(6)
-        )
+    const fetchQuery = buildGetRecipesQuery({
+      lastKey,
+      isInitialFetch: !recipes.length,
+    })
 
     const data = await getDocs(fetchQuery)
     const docs = data.docs

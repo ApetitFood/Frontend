@@ -46,7 +46,7 @@ const User: NextPage = () => {
 export async function getServerSideProps() {
   return {
     props: {
-      protected: true,
+      protected: false,
     },
   }
 }

@@ -86,11 +86,7 @@ const AddRecipeForm = () => {
             photo: recipePhoto,
             createdAt: Timestamp.now(),
           }
-          const response = await addDoc(
-            collection(firebaseDb, 'recipes'),
-            recipe
-          )
-          // await searchIndex.saveObject({ ...recipe, objectID: response.id })
+          await addDoc(collection(firebaseDb, 'recipes'), recipe)
         } catch (error) {
           console.warn(error)
           setError('Failed to post a new recipe. Please try again later')

@@ -1,10 +1,21 @@
-import { Text, Box, AspectRatio, Image } from '@chakra-ui/react'
+import { Text, Box, AspectRatio, Image, IconButton } from '@chakra-ui/react'
 import { Recipe } from '@/types/recipe'
 import Link from 'next/link'
+import { HeartOutlined } from '@ant-design/icons'
+import { useAuth } from '@/context/AuthContext'
+import { addDoc, collection } from 'firebase/firestore'
+import { firebaseDb } from '@/firebase'
 
 const Recipe = ({ recipe }: { recipe: Recipe }) => {
   const pathName: string = `recipes/${recipe.id}`
-
+  const { currentUser } = useAuth()
+  const likeRecipe = async (e: any) => {
+    e.preventDefault()
+    await addDoc(collection(firebaseDb, 'likes'), {
+      recipeId: recipe.id,
+      userId: currentUser?.uid,
+    })
+  }
   return (
     <Box
       height={'fit-content'}
@@ -28,14 +39,31 @@ const Recipe = ({ recipe }: { recipe: Recipe }) => {
               {recipe.title}
             </Text>
           </Box>
-          <AspectRatio ratio={4 / 3} maxH={400}>
-            <Image
-              src={recipe.photo}
-              alt='Recipe'
-              boxSize='100px'
-              objectFit='cover'
-            ></Image>
-          </AspectRatio>
+          <Box position='relative'>
+            <AspectRatio ratio={4 / 3} maxH={400}>
+              <Image
+                src={recipe.photo}
+                alt='Recipe'
+                boxSize='100px'
+                objectFit='cover'
+              ></Image>
+            </AspectRatio>
+            <IconButton
+              aria-label='LikeRecipe'
+              variant='solid'
+              colorScheme='red'
+              border='none'
+              size='lg'
+              icon={<HeartOutlined />}
+              onClick={likeRecipe}
+              pos='absolute'
+              top={220}
+              left={310}
+              _focus={{ color: 'red', backgroundColor: 'green' }}
+              _pressed={{ color: 'red', backgroundColor: 'green' }}
+              _visited={{ color: 'red', backgroundColor: 'green' }}
+            />
+          </Box>
         </Box>
       </Link>
       <div className='feed-text-container'>
